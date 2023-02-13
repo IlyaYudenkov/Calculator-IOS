@@ -40,33 +40,53 @@ doPercent = () => {
         secondValue = '';
     }
 }
+//функция позволяет узнать кол-во знаков после запятой, чтобы потом округлить число именно до этого кол-ва знаков
+splitPoint = (firstValue) => {
+    firstValue = String(firstValue);
+    let pointCommonAmount = firstValue.split('.');
+    console.log(pointCommonAmount)
+    let pointAfterAmount = pointCommonAmount[1];
+    console.log(pointAfterAmount)
+    let n = pointAfterAmount.length;
+    firstValue = Number(firstValue).toFixed(n);
+}
+
 makeOperation = () => {
     if (firstValue !== '' && secondValue !== '' && operation !== ''){
         switch (operation) {
             case '+':
                 firstValue = (+firstValue) + (+secondValue);
-                firstValue = firstValue.toFixed(2);
+                // проверка, является ли число дробным, если да, то округляем
+                if(!Number.isInteger(firstValue)){
+                    splitPoint(firstValue); 
+                }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
                 break;
             case '–':
                 firstValue = firstValue - secondValue;
-                firstValue = firstValue.toFixed(2);
+                if(!Number.isInteger(firstValue)){
+                    splitPoint(firstValue); 
+                }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
                 break;
             case 'X':
                 firstValue = firstValue * secondValue;
-                firstValue = firstValue.toFixed(2);
+                if(!Number.isInteger(firstValue)){
+                    splitPoint(firstValue); 
+                }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
                 break;
             case '÷':
                 firstValue = firstValue / secondValue;
-                firstValue = firstValue.toFixed(2);
+                if(!Number.isInteger(firstValue)){
+                    splitPoint(firstValue); 
+                }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
