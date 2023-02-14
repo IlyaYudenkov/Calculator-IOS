@@ -3,6 +3,9 @@ let view;
 let firstValue = '';
 let secondValue = '';
 let operation = '';
+let firstValuePoint;
+let secondValuePoint;
+let resultRound;
 const numbers = ['1','2','3','4','5','6','7','8','9','0'];
 const signs = ['+','–','X','÷', '%'];
 /*
@@ -27,12 +30,15 @@ clearPrev = () => {
     }
 }*/
 
+//функция для полной очистки screen от данных
 clearAll = () => {
     firstValue = '';
     secondValue = '';
     operation = '';
     screen.innerText = '.';
 }
+
+//функция позволяет взять % от первого числа
 doPercent = () => {
     if (firstValue !== '' && operation == '%'){
         firstValue = firstValue / 100;
@@ -40,52 +46,83 @@ doPercent = () => {
         secondValue = '';
     }
 }
-//функция позволяет узнать кол-во знаков после запятой, чтобы потом округлить число именно до этого кол-ва знаков
-splitPoint = (firstValue) => {
-    firstValue = String(firstValue);
-    let pointCommonAmount = firstValue.split('.');
-    console.log(pointCommonAmount)
-    let pointAfterAmount = pointCommonAmount[1];
-    console.log(pointAfterAmount)
-    let n = pointAfterAmount.length;
-    firstValue = Number(firstValue).toFixed(n);
-}
 
+//функция позволяет узнать, какое из введенных чисел является дробным (или оба), для того,
+//чтобы в дальнейшем округлять результат до n знаков после запятой,
+//где n - количество знаков после запятой у самого длинного введенного дробного числа
+roundTheFloat = () => {
+    firstValue = String(firstValue);
+    secondValue = String(secondValue);
+    if(firstValue.includes('.') && !secondValue.includes('.')){
+        firstValuePoint = firstValue.split('.');
+        resultRound = firstValuePoint[1].length;
+    }
+    else if(!firstValue.includes('.') && secondValue.includes('.')){
+        secondValuePoint = secondValue.split('.');
+        resultRound = secondValuePoint[1].length;
+    }
+    else if(firstValue.includes('.') && secondValue.includes('.')){
+        firstValuePoint = firstValue.split('.');
+        secondValuePoint = secondValue.split('.');
+        if(firstValuePoint[1].length > secondValuePoint[1].length){
+            resultRound = firstValuePoint[1].length;
+        }
+        else{
+            resultRound = secondValuePoint[1].length;
+        }
+    }
+}
+//функция выбирает арифметическую операция в зависимости от введеннного знака в переменную "operation"
 makeOperation = () => {
     if (firstValue !== '' && secondValue !== '' && operation !== ''){
         switch (operation) {
             case '+':
-                firstValue = (+firstValue) + (+secondValue);
-                // проверка, является ли число дробным, если да, то округляем
-                if(!Number.isInteger(firstValue)){
-                    splitPoint(firstValue); 
+                if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
+                   roundTheFloat();
+                   firstValue = (+firstValue) + (+secondValue);
+                   firstValue = firstValue.toFixed(resultRound);
+                }
+                else{
+                    firstValue = (+firstValue) + (+secondValue); 
                 }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
                 break;
             case '–':
-                firstValue = firstValue - secondValue;
-                if(!Number.isInteger(firstValue)){
-                    splitPoint(firstValue); 
+                if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
+                    roundTheFloat();
+                    firstValue = firstValue - secondValue;
+                    firstValue = firstValue.toFixed(resultRound);
+                }
+                else{
+                    firstValue = firstValue - secondValue;
                 }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
                 break;
             case 'X':
-                firstValue = firstValue * secondValue;
-                if(!Number.isInteger(firstValue)){
-                    splitPoint(firstValue); 
+                if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
+                    roundTheFloat();
+                    firstValue = firstValue * secondValue;
+                    firstValue = firstValue.toFixed(resultRound);
+                }
+                else{
+                    firstValue = firstValue * secondValue;
                 }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
                 secondValue = '';
                 break;
             case '÷':
-                firstValue = firstValue / secondValue;
-                if(!Number.isInteger(firstValue)){
-                    splitPoint(firstValue); 
+                if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
+                    roundTheFloat();
+                    firstValue = firstValue / secondValue;
+                    firstValue = firstValue.toFixed(resultRound);
+                }
+                else{
+                    firstValue = firstValue / secondValue;
                 }
                 firstValue = String(firstValue);
                 screen.innerText = firstValue;
@@ -97,8 +134,8 @@ makeOperation = () => {
         screen.innerText = firstValue;
     };
 } 
-//числа с точкой
-document.querySelector('.btn-point').addEventListener('click', (event) => {
+//функция для работы с числами с точкой
+document.querySelector('.row__darkgrey__point').addEventListener('click', (event) => {
     let point = event.target.textContent;
     //чтобы не было двух точек подряд у первого числа
     if(firstValue.includes('.') && operation === '' && secondValue === ''){
@@ -118,8 +155,8 @@ document.querySelector('.btn-point').addEventListener('click', (event) => {
     
 })
 
-
-document.querySelector('.btn-plusMinus').addEventListener('click', () => {
+//функция для работы с +/- (не позволяет написать -0)
+document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
     if(operation === '' && firstValue !== '0' && firstValue !== '-0'){
         firstValue = -firstValue;
         screen.innerText = firstValue;
@@ -131,8 +168,10 @@ document.querySelector('.btn-plusMinus').addEventListener('click', () => {
 
 /*document.querySelector('.btn-clearPrev').addEventListener('click', clearPrev)*/
 
-document.querySelector('.btn-clearAll').addEventListener('click', clearAll)
+document.querySelector('.row__grey_clearAll').addEventListener('click', clearAll)
 
+
+// функция позволяет сохранить два введенных значения в соответствующие переменные firstValue и secondValue
 document.querySelector('.buttons').addEventListener('click', (event) => {
     const key = event.target.textContent;
     if(numbers.includes(key)){
@@ -167,7 +206,8 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
             screen.innerText = secondValue;
         }
         console.log(firstValue, secondValue)
-    }else if(signs.includes(key) && firstValue !== ''){
+    }
+    else if(signs.includes(key) && firstValue !== ''){
         operation = key;
         screen.innerText = operation;
         makeOperation();
@@ -175,8 +215,8 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
     } 
 }
 )
-
-document.querySelector('.btn-result').addEventListener('click', () => {
+//функция для отображение результата операции
+document.querySelector('.row__orange_result').addEventListener('click', () => {
     makeOperation();
     operation = '';   
 })
