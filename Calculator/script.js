@@ -6,8 +6,9 @@ let operation = '';
 let firstValuePoint;
 let secondValuePoint;
 let resultRound;
+let percentResult;
 const numbers = ['1','2','3','4','5','6','7','8','9','0'];
-const signs = ['+','–','X','÷', '%'];
+const signs = ['+','–','X','÷'];
 /*
 clearPrev = () => {
     view = screen.innerText;
@@ -38,12 +39,17 @@ clearAll = () => {
     screen.innerText = '.';
 }
 
-//функция позволяет взять % от первого числа
+//функция позволяет взять % (разделить на 100) от введенного числа
 doPercent = () => {
-    if (firstValue !== '' && operation == '%'){
+    if (firstValue !== '' && percentResult == '%' && secondValue === ''){
         firstValue = firstValue / 100;
         screen.innerText = firstValue;
-        secondValue = '';
+        percentResult = '';
+    }
+    else if(percentResult == '%' && secondValue !== ''){
+        secondValue = secondValue / 100;
+        screen.innerText = secondValue;
+        percentResult = '';
     }
 }
 
@@ -72,6 +78,20 @@ roundTheFloat = () => {
         }
     }
 }
+//функция позволяет избавиться от 0 в дробной части, если результат вычисления - целое число
+roundTheInteger = () => {
+        if(firstValue % 1 === 0){
+            firstValue = Math.round(firstValue);
+            firstValue = String(firstValue);
+        }
+}
+//функция для исключения повтора одинаковых строк в каждой операции
+roundAndShow = () => {
+    roundTheInteger();
+    screen.innerText = firstValue;
+    secondValue = '';
+}
+
 //функция выбирает арифметическую операция в зависимости от введеннного знака в переменную "operation"
 makeOperation = () => {
     if (firstValue !== '' && secondValue !== '' && operation !== ''){
@@ -83,11 +103,9 @@ makeOperation = () => {
                    firstValue = firstValue.toFixed(resultRound);
                 }
                 else{
-                    firstValue = (+firstValue) + (+secondValue); 
+                    firstValue = (+firstValue) + (+secondValue);
                 }
-                firstValue = String(firstValue);
-                screen.innerText = firstValue;
-                secondValue = '';
+                roundAndShow();
                 break;
             case '–':
                 if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
@@ -98,9 +116,7 @@ makeOperation = () => {
                 else{
                     firstValue = firstValue - secondValue;
                 }
-                firstValue = String(firstValue);
-                screen.innerText = firstValue;
-                secondValue = '';
+                roundAndShow();
                 break;
             case 'X':
                 if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
@@ -111,22 +127,17 @@ makeOperation = () => {
                 else{
                     firstValue = firstValue * secondValue;
                 }
-                firstValue = String(firstValue);
-                screen.innerText = firstValue;
-                secondValue = '';
+                roundAndShow();
                 break;
             case '÷':
                 if(!Number.isInteger(+firstValue) || !Number.isInteger(+secondValue)){
                     roundTheFloat();
                     firstValue = firstValue / secondValue;
-                    firstValue = firstValue.toFixed(resultRound);
                 }
                 else{
                     firstValue = firstValue / secondValue;
                 }
-                firstValue = String(firstValue);
-                screen.innerText = firstValue;
-                secondValue = '';
+                roundAndShow();
                 break;
             default:
                 break;
@@ -174,8 +185,7 @@ document.querySelector('.row__grey_clearAll').addEventListener('click', clearAll
 // функция позволяет сохранить два введенных значения в соответствующие переменные firstValue и secondValue
 document.querySelector('.buttons').addEventListener('click', (event) => {
     const key = event.target.textContent;
-    if(numbers.includes(key)){
-        
+    if(numbers.includes(key)){  
         if (operation === '' && firstValue !== '0'){
             firstValue += key;
             screen.innerText = firstValue;
@@ -205,19 +215,21 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
             secondValue += key;
             screen.innerText = secondValue;
         }
-        console.log(firstValue, secondValue)
     }
     else if(signs.includes(key) && firstValue !== ''){
         operation = key;
         screen.innerText = operation;
         makeOperation();
-        doPercent();
     } 
+    else if(key === '%'){
+        percentResult = '%';
+        doPercent();
+    }
 }
 )
 //функция для отображение результата операции
 document.querySelector('.row__orange_result').addEventListener('click', () => {
     makeOperation();
-    operation = '';   
+    operation = '';
 })
 
