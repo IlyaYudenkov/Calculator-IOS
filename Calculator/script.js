@@ -1,5 +1,4 @@
 let screen = document.querySelector('.screen p');
-let view;
 let firstValue = '';
 let secondValue = '';
 let operation = '';
@@ -10,6 +9,7 @@ let percentResult;
 const numbers = ['1','2','3','4','5','6','7','8','9','0'];
 const signs = ['+','–','X','÷'];
 /*
+let view;
 clearPrev = () => {
     view = screen.innerText;
     view = view.substring(0, view.length - 1)
@@ -85,7 +85,7 @@ roundTheInteger = () => {
             firstValue = String(firstValue);
         }
 }
-//функция для исключения повтора одинаковых строк в каждой операции
+//функция для исключения повтора одинаковых строк в каждой операции функции makeOperation
 roundAndShow = () => {
     roundTheInteger();
     screen.innerText = firstValue;
@@ -163,12 +163,12 @@ document.querySelector('.row__darkgrey__point').addEventListener('click', (event
     else if(secondValue.includes('.') && operation !== ''){
         return;
     }
-    
 })
 
 //функция для работы с +/- (не позволяет написать -0)
 document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
-    if(operation === '' && firstValue !== '0' && firstValue !== '-0'){
+    if(operation === '' && firstValue !== '0' && firstValue !== '-0' && screen == '.'){
+        screen == '.';//фиксит возможность написания нескольких нулей подряд
         firstValue = -firstValue;
         screen.innerText = firstValue;
     }else if(firstValue !== '' && operation !== '' && secondValue !== '0' && secondValue !== '-0'){
