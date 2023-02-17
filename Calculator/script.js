@@ -79,12 +79,30 @@ roundTheFloat = () => {
     }
 }
 //функция позволяет избавиться от 0 в дробной части, если результат вычисления - целое число
+//так же позволяет при делении адекватно округлять числа, не позволяя дробной части выходить за пределы screen
 roundTheInteger = () => {
-        if(firstValue % 1 === 0){
+    if(operation === '+' || operation === '–' || operation === 'X'){
+        if(firstValue % 1 === 0){//если остатка при делении на 1 нет, то число округляется до целого
             firstValue = Math.round(firstValue);
             firstValue = String(firstValue);
         }
-}
+        }
+        else if(operation === '÷'){
+            if(firstValue % 1 === 0){
+                firstValue = Math.round(firstValue);
+            }
+            else if(firstValue.length >= 6){//именно 6 символов максимально помещается в screen в полном виде
+                firstValue = (+firstValue).toFixed(5);
+            }
+            else{
+                firstValuePoint = firstValue.split('.');
+                resultRound = firstValuePoint[1].length;
+                firstValue = (+firstValue).toFixed(resultRound);
+            }
+            firstValue = String(firstValue);
+        }
+    }
+
 //функция для исключения повтора одинаковых строк в каждой операции функции makeOperation
 roundAndShow = () => {
     roundTheInteger();
@@ -92,7 +110,7 @@ roundAndShow = () => {
     secondValue = '';
 }
 
-//функция выбирает арифметическую операция в зависимости от введеннного знака в переменную "operation"
+//функция выбирает арифметическую операция в зависимости от введенного знака в переменную "operation"
 makeOperation = () => {
     if (firstValue !== '' && secondValue !== '' && operation !== ''){
         switch (operation) {
@@ -167,16 +185,15 @@ document.querySelector('.row__darkgrey__point').addEventListener('click', (event
 
 //функция для работы с +/- (не позволяет написать -0)
 document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
-    if(operation === '' && firstValue !== '0' && firstValue !== '-0' && screen == '.'){
-        screen == '.';//фиксит возможность написания нескольких нулей подряд
+    if(operation === '' && firstValue !== '0' && firstValue !== '-0' && firstValue !== ''){
         firstValue = -firstValue;
+        firstValue = String(firstValue);
         screen.innerText = firstValue;
     }else if(firstValue !== '' && operation !== '' && secondValue !== '0' && secondValue !== '-0'){
         secondValue = -secondValue;
         screen.innerText = secondValue;
     }
 })
-
 /*document.querySelector('.btn-clearPrev').addEventListener('click', clearPrev)*/
 
 document.querySelector('.row__grey_clearAll').addEventListener('click', clearAll)
@@ -184,7 +201,7 @@ document.querySelector('.row__grey_clearAll').addEventListener('click', clearAll
 
 // функция позволяет сохранить два введенных значения в соответствующие переменные firstValue и secondValue
 document.querySelector('.buttons').addEventListener('click', (event) => {
-    const key = event.target.textContent;
+    let key = event.target.textContent;
     if(numbers.includes(key)){  
         if (operation === '' && firstValue !== '0'){
             firstValue += key;
