@@ -17,14 +17,17 @@
   align-items: center;
 }
 
-.screen {
+.screen p {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
   height: 230px;
   width: 320px;
   overflow: hidden;
   color: #fff;
   font-size: 90px;
   font-weight: 300;
-  text-align: right;
+  margin-bottom: 10px;
 }
 
 button {
@@ -34,11 +37,18 @@ button {
   border-radius: 50%;
   font-size: 40px;
   border: 1px solid transparent;
+  transition-duration: 0.3s;
+  cursor: pointer;
+}
+button:active {
+  background-color: #fff;
+  color: #000;
+  transition-duration: 0.4s;
 }
 
 .buttons {
   height: 450px;
-  max-width: 390px;
+  width: 390px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -37,6 +37,7 @@ clearAll = () => {
     secondValue = '';
     operation = '';
     screen.innerText = '.';
+    screen.style.fontSize = '90px';
 }
 
 //функция позволяет взять % (разделить на 100) от введенного числа
@@ -78,6 +79,7 @@ roundTheFloat = () => {
         }
     }
 }
+console.log(9999999999/6)
 //функция позволяет избавиться от 0 в дробной части, если результат вычисления - целое число
 //так же позволяет при делении адекватно округлять числа, не позволяя дробной части выходить за пределы screen
 roundTheInteger = () => {
@@ -91,16 +93,19 @@ roundTheInteger = () => {
             if(firstValue % 1 === 0){
                 firstValue = Math.round(firstValue);
             }
-            else if(firstValue.length >= 6){//именно 6 символов максимально помещается в screen в полном виде
-                firstValue = (+firstValue).toFixed(5);
-            }
+           /* else if(String(firstValue).length >= 8){//именно 9 символов максимально помещается в screen в полном виде
+                firstValue = (+firstValue).toFixed(7);
+                console.log('hh')
+            }*/
             else{
+                firstValue = String(firstValue);
                 firstValuePoint = firstValue.split('.');
                 resultRound = firstValuePoint[1].length;
                 firstValue = (+firstValue).toFixed(resultRound);
+                console.log('h')
             }
             firstValue = String(firstValue);
-        }
+        } 
     }
 
 //функция для исключения повтора одинаковых строк в каждой операции функции makeOperation
@@ -161,10 +166,17 @@ makeOperation = () => {
                 break;
         }
         screen.innerText = firstValue;
+        if(screen.innerText.length == 6 ){
+            screen.style.fontSize = '70px';
+        }
+        else if(screen.innerText.length > 6){
+            screen.style.fontSize = '60px';
+        } 
     };
 } 
 //функция для работы с числами с точкой
 document.querySelector('.row__darkgrey__point').addEventListener('click', (event) => {
+    if(screen.innerText.length <= 7){
     let point = event.target.textContent;
     //чтобы не было двух точек подряд у первого числа
     if(firstValue.includes('.') && operation === '' && secondValue === ''){
@@ -181,7 +193,9 @@ document.querySelector('.row__darkgrey__point').addEventListener('click', (event
     else if(secondValue.includes('.') && operation !== ''){
         return;
     }
-})
+    
+}}
+)
 
 //функция для работы с +/- (не позволяет написать -0)
 document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
@@ -198,11 +212,17 @@ document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
 
 document.querySelector('.row__grey_clearAll').addEventListener('click', clearAll)
 
-
 // функция позволяет сохранить два введенных значения в соответствующие переменные firstValue и secondValue
 document.querySelector('.buttons').addEventListener('click', (event) => {
     let key = event.target.textContent;
+    if(screen.innerText.length == 6 ){
+        screen.style.fontSize = '70px';
+    }
+    else if(screen.innerText.length > 6){
+        screen.style.fontSize = '60px';
+    } 
     if(numbers.includes(key)){  
+        if(screen.innerText.length <= 8){
         if (operation === '' && firstValue !== '0'){
             firstValue += key;
             screen.innerText = firstValue;
@@ -233,7 +253,9 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
             screen.innerText = secondValue;
         }
     }
+    }
     else if(signs.includes(key) && firstValue !== ''){
+        screen.innerText = '';
         operation = key;
         screen.innerText = operation;
         makeOperation();
@@ -242,7 +264,14 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
         percentResult = '%';
         doPercent();
     }
+    if(screen.innerText !== '.'){
+        document.querySelector('.row__grey_clearAll').innerHTML = 'C';
+    }
+    else{
+        document.querySelector('.row__grey_clearAll').innerHTML = 'AC';
+    }
 }
+
 )
 //функция для отображение результата операции
 document.querySelector('.row__orange_result').addEventListener('click', () => {
