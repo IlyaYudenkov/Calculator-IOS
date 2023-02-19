@@ -79,31 +79,30 @@ roundTheFloat = () => {
         }
     }
 }
-console.log(9999999999/6)
+
 //функция позволяет избавиться от 0 в дробной части, если результат вычисления - целое число
 //так же позволяет при делении адекватно округлять числа, не позволяя дробной части выходить за пределы screen
 roundTheInteger = () => {
     if(operation === '+' || operation === '–' || operation === 'X'){
         if(firstValue % 1 === 0){//если остатка при делении на 1 нет, то число округляется до целого
             firstValue = Math.round(firstValue);
-            firstValue = String(firstValue);
         }
+        firstValue = String(firstValue);
         }
-        else if(operation === '÷'){
+        else if(operation === '÷'){//если остатка при делении на 1 нет, то число округляется до целого
             if(firstValue % 1 === 0){
                 firstValue = Math.round(firstValue);
             }
-           /* else if(String(firstValue).length >= 8){//именно 9 символов максимально помещается в screen в полном виде
-                firstValue = (+firstValue).toFixed(7);
-                console.log('hh')
-            }*/
             else{
-                firstValue = String(firstValue);
-                firstValuePoint = firstValue.split('.');
+                firstValuePoint = String(firstValue).split('.');
                 resultRound = firstValuePoint[1].length;
-                firstValue = (+firstValue).toFixed(resultRound);
-                console.log('h')
-            }
+                    if(resultRound >= 8){//количество знаков в дробной части
+                        firstValue = (+firstValue).toFixed(8);
+                    }
+                    else{
+                        firstValue = (+firstValue).toFixed(resultRound);
+                    }
+                }
             firstValue = String(firstValue);
         } 
     }
@@ -201,7 +200,6 @@ document.querySelector('.row__darkgrey__point').addEventListener('click', (event
 document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
     if(operation === '' && firstValue !== '0' && firstValue !== '-0' && firstValue !== ''){
         firstValue = -firstValue;
-        firstValue = String(firstValue);
         screen.innerText = firstValue;
     }else if(firstValue !== '' && operation !== '' && secondValue !== '0' && secondValue !== '-0'){
         secondValue = -secondValue;
