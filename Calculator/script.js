@@ -39,10 +39,32 @@ clearAll = () => {
     screen.innerText = '.';
     screen.style.fontSize = '90px';
 }
-
+//функция для уменьшения шрифта на screen (чтобы не было двухстрочного результата)
+shrinkTheFont = () => {
+    if(screen.innerText.length == 6 ){
+        screen.style.fontSize = '65px';
+    }
+    else if(screen.innerText.length > 6 && screen.innerText.length <= 9){
+        screen.style.fontSize = '60px';
+    }
+    else if(screen.innerText.length > 9 && screen.innerText.length < 14){
+        screen.style.fontSize = '50px';
+        screen.style.marginBottom = '16px';
+        console.log('dsdasdasdas')
+    }
+    else if(screen.innerText.length >= 14 && screen.innerText.length < 19){
+        screen.style.fontSize = '37px';
+        screen.style.marginBottom = '18px';
+    }
+    else if(screen.innerText.length >= 19){
+        screen.style.fontSize = '29px';
+        screen.style.marginBottom = '20px';
+    }
+    console.log('hhhh')
+}
 //функция позволяет взять % (разделить на 100) от введенного числа
 doPercent = () => {
-    if (firstValue !== '' && percentResult == '%' && secondValue === ''){
+    if (firstValue !== '' && firstValue !== '0' && percentResult == '%' && secondValue === '' ){
         firstValue = firstValue / 100;
         screen.innerText = firstValue;
         percentResult = '';
@@ -52,6 +74,7 @@ doPercent = () => {
         screen.innerText = secondValue;
         percentResult = '';
     }
+
 }
 
 //функция позволяет узнать, какое из введенных чисел является дробным (или оба), для того,
@@ -94,16 +117,22 @@ roundTheInteger = () => {
                 firstValue = Math.round(firstValue);
             }
             else{
-                firstValuePoint = String(firstValue).split('.');
-                resultRound = firstValuePoint[1].length;
-                    if(resultRound >= 8){//количество знаков в дробной части
-                        firstValue = (+firstValue).toFixed(8);
-                    }
-                    else{
-                        firstValue = (+firstValue).toFixed(resultRound);
-                    }
+                if(secondValue === '0'){// при делении на 0
+                    firstValue = `Can't divide by zero`;
+                    secondValue = '';
                 }
-            firstValue = String(firstValue);
+                else{
+                    firstValuePoint = String(firstValue).split('.');
+                    resultRound = firstValuePoint[1].length;
+                        if(resultRound >= 8){//количество знаков в дробной части
+                            firstValue = (+firstValue).toFixed(8);
+                        }
+                        else{
+                            firstValue = (+firstValue).toFixed(resultRound);
+                        }
+                    }
+                firstValue = String(firstValue);
+                } 
         } 
     }
 
@@ -113,7 +142,6 @@ roundAndShow = () => {
     screen.innerText = firstValue;
     secondValue = '';
 }
-
 //функция выбирает арифметическую операция в зависимости от введенного знака в переменную "operation"
 makeOperation = () => {
     if (firstValue !== '' && secondValue !== '' && operation !== ''){
@@ -164,13 +192,8 @@ makeOperation = () => {
             default:
                 break;
         }
-        screen.innerText = firstValue;
-        if(screen.innerText.length == 6 ){
-            screen.style.fontSize = '70px';
-        }
-        else if(screen.innerText.length > 6){
-            screen.style.fontSize = '60px';
-        } 
+        /*shrinkTheFont();*/
+        screen.innerText = firstValue; 
     };
 } 
 //функция для работы с числами с точкой
@@ -191,8 +214,7 @@ document.querySelector('.row__darkgrey__point').addEventListener('click', (event
     //чтобы не было двух точек подряд у второго числа
     else if(secondValue.includes('.') && operation !== ''){
         return;
-    }
-    
+    } 
 }}
 )
 
@@ -218,21 +240,29 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
     }
     else if(screen.innerText.length > 6){
         screen.style.fontSize = '60px';
-    } 
+    }
     if(numbers.includes(key)){  
         if(screen.innerText.length <= 8){
-        if (operation === '' && firstValue !== '0'){
+        if (operation === '' && firstValue === ''){
             firstValue += key;
             screen.innerText = firstValue;
         }
-        else if(firstValue === '0' && key !== '0'){
-            firstValue = '';
-            firstValue += key;
-            screen.innerText = firstValue;
-        }else if(firstValue === '0' && key === '0'){
-            firstValue = '0';
-            screen.innerText = firstValue;
-        }
+        else if(operation === '' && firstValue !== ''){
+            if(firstValue === '0' && key === '0'){
+                firstValue = '0';
+                screen.innerText = firstValue;
+            }   
+            else if(firstValue === '0' && key !== '0'){
+                firstValue = '';
+                firstValue += key;
+                screen.innerText = firstValue;
+            }
+            else{
+                firstValue += key;
+                screen.innerText = firstValue;
+            }
+            }
+            
         else if(firstValue !== '' && operation !== '' && secondValue !== '0'){
             secondValue += key;
             screen.innerText = secondValue;
@@ -268,12 +298,13 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
     else{
         document.querySelector('.row__grey_clearAll').innerHTML = 'AC';
     }
+    shrinkTheFont();
+    console.log(firstValue, secondValue , operation)
+    
 }
-
 )
 //функция для отображение результата операции
 document.querySelector('.row__orange_result').addEventListener('click', () => {
     makeOperation();
     operation = '';
 })
-
