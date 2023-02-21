@@ -8,28 +8,6 @@ let resultRound;
 let percentResult;
 const numbers = ['1','2','3','4','5','6','7','8','9','0'];
 const signs = ['+','–','X','÷'];
-/*
-let view;
-clearPrev = () => {
-    view = screen.innerText;
-    view = view.substring(0, view.length - 1)
-    if(view.length !== 0){
-        if(operation === ''){
-            firstValue = view;
-            screen.innerText = firstValue;
-        }
-        else if(firstValue !== '' && operation !== ''){
-            secondValue = view;
-            screen.innerText = secondValue;
-        }
-        
-    }else {
-        firstValue = '0';
-        secondValue = '';
-        operation = '';
-        screen.innerText = firstValue;;
-    }
-}*/
 
 //функция для полной очистки screen от данных
 clearAll = () => {
@@ -41,26 +19,21 @@ clearAll = () => {
 }
 //функция для уменьшения шрифта на screen (чтобы не было двухстрочного результата)
 shrinkTheFont = () => {
-    if(screen.innerText.length == 6 ){
-        screen.style.fontSize = '65px';
+    if(screen.innerText.length == 8 ){
+        screen.style.fontSize = '70px';
     }
-    else if(screen.innerText.length > 6 && screen.innerText.length <= 9){
+    else if(screen.innerText.length > 8 && screen.innerText.length <= 9){
         screen.style.fontSize = '60px';
     }
     else if(screen.innerText.length > 9 && screen.innerText.length < 14){
         screen.style.fontSize = '50px';
-        screen.style.marginBottom = '16px';
-        console.log('dsdasdasdas')
     }
     else if(screen.innerText.length >= 14 && screen.innerText.length < 19){
         screen.style.fontSize = '37px';
-        screen.style.marginBottom = '18px';
     }
     else if(screen.innerText.length >= 19){
         screen.style.fontSize = '29px';
-        screen.style.marginBottom = '20px';
     }
-    console.log('hhhh')
 }
 //функция позволяет взять % (разделить на 100) от введенного числа
 doPercent = () => {
@@ -74,7 +47,6 @@ doPercent = () => {
         screen.innerText = secondValue;
         percentResult = '';
     }
-
 }
 
 //функция позволяет узнать, какое из введенных чисел является дробным (или оба), для того,
@@ -124,19 +96,14 @@ roundTheInteger = () => {
                 else{
                     firstValuePoint = String(firstValue).split('.');
                     resultRound = firstValuePoint[1].length;
-                        if(resultRound >= 8){//количество знаков в дробной части
-                            firstValue = (+firstValue).toFixed(8);
-                        }
-                        else{
-                            firstValue = (+firstValue).toFixed(resultRound);
-                        }
-                    }
-                firstValue = String(firstValue);
+                    firstValue = (+firstValue).toFixed(resultRound);
                 } 
+            } 
+            firstValue = String(firstValue);
         } 
     }
 
-//функция для исключения повтора одинаковых строк в каждой операции функции makeOperation
+//функция для исключения повтора одинаковых строк в каждой операции функции "makeOperation"
 roundAndShow = () => {
     roundTheInteger();
     screen.innerText = firstValue;
@@ -192,18 +159,18 @@ makeOperation = () => {
             default:
                 break;
         }
-        /*shrinkTheFont();*/
         screen.innerText = firstValue; 
     };
 } 
 //функция для работы с числами с точкой
 document.querySelector('.row__darkgrey__point').addEventListener('click', (event) => {
-    if(screen.innerText.length <= 7){
+    if(screen.innerText.length <= 9){
     let point = event.target.textContent;
     //чтобы не было двух точек подряд у первого числа
     if(firstValue.includes('.') && operation === '' && secondValue === ''){
         return;
-    }else if(!firstValue.includes('.') && operation === '' && secondValue === ''){
+    }
+    else if(!firstValue.includes('.') && operation === '' && secondValue === ''){
         firstValue += point;
         screen.innerText = firstValue;
     }
@@ -223,22 +190,22 @@ document.querySelector('.row__grey_plusMinus').addEventListener('click', () => {
     if(operation === '' && firstValue !== '0' && firstValue !== '-0' && firstValue !== ''){
         firstValue = -firstValue;
         screen.innerText = firstValue;
-    }else if(firstValue !== '' && operation !== '' && secondValue !== '0' && secondValue !== '-0'){
+    }
+    else if(firstValue !== '' && operation !== '' && secondValue !== '0' && secondValue !== '-0'){
         secondValue = -secondValue;
         screen.innerText = secondValue;
     }
 })
-/*document.querySelector('.btn-clearPrev').addEventListener('click', clearPrev)*/
 
 document.querySelector('.row__grey_clearAll').addEventListener('click', clearAll)
 
 // функция позволяет сохранить два введенных значения в соответствующие переменные firstValue и secondValue
 document.querySelector('.buttons').addEventListener('click', (event) => {
     let key = event.target.textContent;
-    if(screen.innerText.length == 6 ){
+    if(screen.innerText.length == 8 ){
         screen.style.fontSize = '70px';
     }
-    else if(screen.innerText.length > 6){
+    else if(screen.innerText.length > 8){
         screen.style.fontSize = '60px';
     }
     if(numbers.includes(key)){  
@@ -246,6 +213,7 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
         if (operation === '' && firstValue === ''){
             firstValue += key;
             screen.innerText = firstValue;
+            screen.style.fontSize = '90px';
         }
         else if(operation === '' && firstValue !== ''){
             if(firstValue === '0' && key === '0'){
@@ -261,36 +229,42 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
                 firstValue += key;
                 screen.innerText = firstValue;
             }
-            }
-            
+            screen.style.fontSize = '90px';
+        } 
         else if(firstValue !== '' && operation !== '' && secondValue !== '0'){
             secondValue += key;
             screen.innerText = secondValue;
+            screen.style.fontSize = '90px';
         }
         else if(secondValue === '0' && key !== '0'){
             secondValue = '';
             secondValue += key;
             screen.innerText = secondValue;
+            screen.style.fontSize = '90px';
         }
         else if(secondValue === '0' && key === '0'){
             secondValue = '0';
             screen.innerText = secondValue;
+            screen.style.fontSize = '90px';
         }
         else if(secondValue !== '' && operation !== ''){
             secondValue += key;
             screen.innerText = secondValue;
+            screen.style.fontSize = '90px';
         }
     }
-    }
+}
     else if(signs.includes(key) && firstValue !== ''){
         screen.innerText = '';
         operation = key;
         screen.innerText = operation;
         makeOperation();
+        screen.style.fontSize = '90px';
     } 
-    else if(key === '%'){
+    else if(key === '%' && firstValue !== '.'){
         percentResult = '%';
         doPercent();
+        screen.style.fontSize = '90px';
     }
     if(screen.innerText !== '.'){
         document.querySelector('.row__grey_clearAll').innerHTML = 'C';
@@ -298,13 +272,12 @@ document.querySelector('.buttons').addEventListener('click', (event) => {
     else{
         document.querySelector('.row__grey_clearAll').innerHTML = 'AC';
     }
-    shrinkTheFont();
-    console.log(firstValue, secondValue , operation)
-    
+    shrinkTheFont(); 
 }
 )
 //функция для отображение результата операции
 document.querySelector('.row__orange_result').addEventListener('click', () => {
     makeOperation();
     operation = '';
-})
+}
+)
